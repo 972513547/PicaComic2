@@ -128,9 +128,13 @@
   __spiderSite = {
     id: 'huangguo',
     name: '黄果短剧',
-    version: 2,
+    version: 3,
     requires: '>=1',
-    hosts: ['huangguoai.io', 'huangguoai.com'],
+    hosts: [
+      'huangguoai.io',
+      'huangguoai.com',
+      'huangguo-play.lsy972513547.workers.dev'
+    ],
 
     async home(ctx) {
       var data = await getJson(ctx, '/api/home');
@@ -164,7 +168,8 @@
       var page = pageOf(args);
       if (!keyword) throw new Error('黄果搜索词为空');
       var data = await getJson(ctx, '/api/search?q=' + enc(keyword) + '&page=' + page);
-      return { items: cardsOf(data.items), page: page, hasMore: moreOf(data.pagination, page, cardsOf(data.items).length) };
+      var items = cardsOf(data.items);
+      return { items: items, page: page, hasMore: moreOf(data.pagination, page, items.length) };
     },
 
     async detail(ctx, args) {
