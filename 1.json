@@ -39,6 +39,20 @@
       "pic.jtzatly.cn"
     ]
   },
+  "http": {
+    "hosts": [
+      "huangguoai.io",
+      "huangguoai.com",
+      "huangguo-play.lsy972513547.workers.dev",
+      "hzjvlo.cn",
+      "*.hzjvlo.cn",
+      "drleao.cn",
+      "*.drleao.cn",
+      "yd-lphu-long.hzjvlo.cn",
+      "tp2.drleao.cn",
+      "tp3.drleao.cn"
+    ]
+  },
   "web": {
     "spider": "https://raw.githubusercontent.com/972513547/PicaComic2/master/huangguo.js",
     "firstPageSize": 20,
