@@ -1,5 +1,5 @@
 (function () {
-  var BASE = 'https://huangguoai.io';
+  var BASE = 'https://hu angguoai.io';
   var PIC = 'https://pic.drleao.cn';
   var PAGE_SIZE = 20;
   var PLAY_WORKERS = [
