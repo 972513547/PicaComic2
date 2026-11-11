@@ -97,19 +97,24 @@
 
   function splitRef(ref) {
     var raw = str(ref);
-    var i = raw.indexOf(':');
+    var i = raw.lastIndexOf(':');
     if (i < 0) return { id: raw, ep: 1 };
-    return { id: raw.substring(0, i), ep: Math.max(1, num(raw.substring(i + 1), 1)) };
+    var left = raw.substring(0, i);
+    var right = raw.substring(i + 1);
+    var ep = 1;
+    if (/^ep\d+$/i.test(right)) ep = Math.max(1, num(right.substring(2), 1));
+    else ep = Math.max(1, num(right, 1));
+    return { id: left, ep: ep };
   }
 
   async function playViaWorker(ctx, id, ep) {
     var lastErr = '';
     for (var i = 0; i < PLAY_WORKERS.length; i++) {
       var base = PLAY_WORKERS[i].replace(/\/$/, '');
-      var url = base + '/api/play?id=' + enc(id) + '&ep=' + enc(ep);
+      var api = base + '/api/play?id=' + enc(id) + '&ep=' + enc(ep);
       try {
         var res = await ctx.call('net', {
-          url: url,
+          url: api,
           headers: { 'Accept': 'application/json' }
         });
         if (!res || res.ok !== true) {
@@ -119,7 +124,8 @@
         var body = String(res.body || '');
         if (!body) { lastErr = 'empty'; continue; }
         var box = JSON.parse(body);
-        var stream = str(box.url || (box.data && box.data.url) || '');
+        // 优先 Worker 中转的 m3u8，其次原始地址
+        var stream = str(box.proxy || box.url || (box.data && box.data.url) || '');
         if (stream) return stream;
         lastErr = 'no url';
       } catch (e) {
@@ -132,7 +138,7 @@
   __spiderSite = {
     id: 'huangguo',
     name: '黄果短剧',
-    version: 4,
+    version: 5,
     requires: '>=1',
     hosts: [
       'huangguoai.io',
@@ -232,7 +238,7 @@
           return {
             url: url,
             headers: PLAY_HEADERS,
-            alts: [{ line: '默认线路', url: url, headers: PLAY_HEADERS }],
+            alts: [{ line: 'default', name: '默认线路', url: url, headers: PLAY_HEADERS }],
             episodeNumber: ref.ep
           };
         }
@@ -241,7 +247,7 @@
       return {
         url: stream,
         headers: PLAY_HEADERS,
-        alts: [{ line: '默认线路', url: stream, headers: PLAY_HEADERS }],
+        alts: [{ line: 'default', name: '默认线路', url: stream, headers: PLAY_HEADERS }],
         episodeNumber: ref.ep
       };
     },
