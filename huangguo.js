@@ -1,6 +1,6 @@
 (function () {
   var BASE = 'https://huangguoai.io';
-  var PIC = 'https://pic.drleao.cn';
+  var PIC = 'https://pic.drlea o.cn';
   var PAGE_SIZE = 20;
   var PLAY_WORKERS = [
     'https://huangguo-play.lsy972513547.workers.dev'
