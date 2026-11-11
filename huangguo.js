@@ -1,10 +1,14 @@
 (function () {
   var BASE = 'https://huangguoai.io';
-  var PIC = 'https://pic.drlea o.cn';
+  var PIC = 'https://pic.drleao.cn';
   var PAGE_SIZE = 20;
   var PLAY_WORKERS = [
     'https://huangguo-play.lsy972513547.workers.dev'
   ];
+  var PLAY_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Linux; Android) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36',
+    'Referer': 'https://huangguoai.io/'
+  };
 
   function enc(v) { return encodeURIComponent(String(v == null ? '' : v)); }
   function str(v) { return String(v == null ? '' : v).trim(); }
@@ -128,7 +132,7 @@
   __spiderSite = {
     id: 'huangguo',
     name: '黄果短剧',
-    version: 3,
+    version: 4,
     requires: '>=1',
     hosts: [
       'huangguoai.io',
@@ -225,13 +229,19 @@
         var data = await getJson(ctx, '/api/videos/' + enc(id) + '/play?ep=' + ref.ep);
         var url = str(data.video_url);
         if (url) {
-          return { url: url, alts: [{ line: '默认线路', url: url }], episodeNumber: ref.ep };
+          return {
+            url: url,
+            headers: PLAY_HEADERS,
+            alts: [{ line: '默认线路', url: url, headers: PLAY_HEADERS }],
+            episodeNumber: ref.ep
+          };
         }
       } catch (e) {}
       var stream = await playViaWorker(ctx, id, ref.ep);
       return {
         url: stream,
-        alts: [{ line: '默认线路', url: stream }],
+        headers: PLAY_HEADERS,
+        alts: [{ line: '默认线路', url: stream, headers: PLAY_HEADERS }],
         episodeNumber: ref.ep
       };
     },
